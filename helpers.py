@@ -22,7 +22,7 @@ def load_img(name):
         raise SystemExit
     return image, image.get_rect()
 
-def create_text(text):
-    font = pygame.font.Font(None, 36)
+def create_text(text, size):
+    font = pygame.font.Font(None, size)
     textSurface = font.render(text, True, (10, 10, 10))
     return textSurface, textSurface.get_rect()

@@ -40,9 +40,9 @@ class Button(Clickable):
 
 class ItemButton(Button):
     def __init__(self, pos, itemName, quantity=1, toWeigh=False, function=None):
-        size = min(int(325 / len(itemName)), 75)
+        size = min(int(340 / len(itemName)), 70)
         Button.__init__(self, pos, itemName, size, 'item.png', function=function)
-        self.textRect[1] -= 10
+        self.textRect[1] = self.rect[1] + self.textRect[3] / 5
         self.toWeigh = toWeigh
 
         if(self.toWeigh):

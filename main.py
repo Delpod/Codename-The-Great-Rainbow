@@ -8,8 +8,10 @@ try:
     import buttons
     import textField
     import drawRect
+    import items
     from pygame.locals import *
     from helpers import *
+    from items import *
     from buttons import Button, DigitButton, ItemButton, RenderButton
     from textField import TextField
     from drawRect import DrawRect
@@ -24,7 +26,7 @@ def setValue(value, textfield):
     textfield.setText(str(int(textfield.string) * 10 + value))
 
 def backspace(textfield):
-    textfield.setText(str(int(int(textfield.string)) / 10))
+    textfield.setText(str(int(int(textfield.string) / 10)))
 
 def clear(textfield):
     textfield.setText('0')
@@ -59,14 +61,16 @@ def generateItem(itembutton):
     y = random.randint(0, screensize[1] - 100)
     quantity = 1
     weigh = random.randint(0, 100) > 50
+    itemName = weighItems[random.randint(0, len(weighItems) - 1)] if weigh else pieceItems[random.randint(0, len(pieceItems) - 1)]
+
     if (weigh):
         quantity = random.randint(5, 200) / 100
     else:
         many = random.randint(0, 100) > 50
-        if (many):
-            quantity = random.randint(2, 50)
+        if(many):
+            quantity = random.triangular(2, 50, 2)
 
-    itembutton.add((ItemButton((x, y), 'Pen', quantity, weigh)))
+    itembutton.add((ItemButton((x, y), itemName, quantity, weigh)))
 
 
 pygame.init()

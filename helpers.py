@@ -7,7 +7,6 @@ except ImportError as err:
     print('couldn\'t load module. %s' % err)
     sys.exit(1)
 
-
 def load_img(name):
     '''Load image and return image object'''
     fullname = os.path.join('data\images', name)

@@ -1,6 +1,7 @@
 try:
     import sys
     import pygame
+    import pygame.font
     import os
 except ImportError as err:
     print('couldn\'t load module. %s' % err)
@@ -20,3 +21,8 @@ def load_img(name):
         print('Cannot load image: ', message)
         raise SystemExit
     return image, image.get_rect()
+
+def create_text(text):
+    font = pygame.font.Font(None, 36)
+    textSurface = font.render(text, True, (10, 10, 10))
+    return textSurface, textSurface.get_rect()

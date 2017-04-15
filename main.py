@@ -4,6 +4,7 @@ try:
     import math
     import os
     import pygame
+    import pygame.font
     import helpers
     from pygame.locals import *
     from helpers import *
@@ -18,16 +19,25 @@ class Clickable(pygame.sprite.Sprite):
 
     def checkClick(self, mousePos):
         if(self.rect.collidepoint(mousePos[0], mousePos[1])):
-            return True
+            return True, self.onClick()
         else:
-            return False
+            return False, None
+
+    def onClick(self):
+        pass
 
 class Button(Clickable):
-    def __init__(self):
+    def __init__(self, text):
         Clickable.__init__(self)
         self.image, self.rect = load_img('button.png')
-        screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
+        self.screen = pygame.display.get_surface()
+        self.area = self.screen.get_rect()
+        self.text, self.textRect = create_text(text)
+        self.textRect.center = ((self.rect[0] + self.rect[2]/2), (self.rect[1] + self.rect[3]/2))
+
+    def drawText(self):
+        self.screen.blit(self.text, self.textRect)
+
 
 pygame.init()
 screen = pygame.display.set_mode((640, 480))
@@ -38,7 +48,8 @@ background = background.convert()
 background.fill((250, 250, 250))
 
 global button
-button = Button()
+global text
+button = Button('0')
 
 buttons = pygame.sprite.RenderPlain((button))
 
@@ -55,7 +66,10 @@ while True:
             sys.exit(2)
         elif(event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]):
             for b in buttons.sprites():
-                print(b.checkClick(pygame.mouse.get_pos()))
+                b.checkClick(pygame.mouse.get_pos())
+
     screen.blit(background, button.rect, button.rect)
     buttons.draw(screen)
+    for b in buttons.sprites():
+        b.drawText()
     pygame.display.flip()

@@ -11,6 +11,7 @@ except ImportError as err:
     print('couldn\'t load module. %s' % err)
     sys.exit(1)
 
+
 class Clickable(pygame.sprite.Sprite):
     def __init__(self, function=None):
         pygame.sprite.Sprite.__init__(self)
@@ -27,6 +28,7 @@ class Clickable(pygame.sprite.Sprite):
     def onClick(self, *kwargs):
         if(self.function != None):
             self.function(*kwargs)
+
 
 class TextFieldButton(TextField, Clickable):
     def __init__(self, pos, size, textSize, text, innerColor=(255, 255, 255), outerColor=(0, 0, 0), function=None):
@@ -84,10 +86,17 @@ class ItemButton(Button):
             self.failure = True
 
     def setQuantity(self, quantity):
+        if(quantity < 0):
+            self.failure = True
         self.quantity = quantity
         self.text2, self.textRect2 = create_text('x ' + str(quantity), 30)
         self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
 
+    def onClick(self, *kwargs):
+        if(self.toWeigh and (not self.weighed or kwargs[0] != 0)):
+            self.failure = True
+        else:
+            Button.onClick(self)
 
 
 class DigitButton(Button):
@@ -97,6 +106,7 @@ class DigitButton(Button):
 
     def onClick(self, *kwargs):
         Button.onClick(self, self.value, *kwargs)
+
 
 class RenderButton(pygame.sprite.RenderPlain):
     def __init__(self, *sprites):

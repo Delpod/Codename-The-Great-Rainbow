@@ -118,7 +118,7 @@ while True:
                     if(buttons.sprites()[i].checkClick(pygame.mouse.get_pos(), buttonArgs[i])):
                         break
                 else:
-                    if(item.weighed and item.checkClick(pygame.mouse.get_pos())):
+                    if(item.checkClick(pygame.mouse.get_pos(), int(textfield.string)) and item.weighed):
                         if(item.toWeigh):
                             screen.blit(background, item.rect)
                             numberOfGoods += 1
@@ -133,12 +133,12 @@ while True:
                                 numberOfGoods += q
                                 numberOfItemsDone += 1
                                 itembutton.empty()
-                                if(item.quantity < 0):
-                                    state = 'GAMEOVER'
                 if(item.failure):
+                    clear(textfield)
                     screen.blit(background, item.rect)
                     itembutton.empty()
                     state = 'GAMEOVER'
+
             elif(state == 'START'):
                 if(nextClientButton.checkClick(pygame.mouse.get_pos())):
                     numberOfItems = random.randint(10, 20)
@@ -148,6 +148,7 @@ while True:
                     numberOfGoods = 0
                     state = 'GAME'
                     startticks = pygame.time.get_ticks()
+
             elif(state == 'GAMEOVER'):
                 for i in range(1, len(gameOverScreen)):
                     if(gameOverScreen[i].checkClick(pygame.mouse.get_pos())):
@@ -161,12 +162,15 @@ while True:
     buttons.draw(screen)
     textfield.draw(screen)
     otherUi.draw(screen)
+
     if (state == 'START'):
         nextClientButton.draw(screen)
         if (timePerGood != -1):
             goodsAlert.draw(screen)
+
     elif (state == 'GAME'):
         if (len(itembutton.sprites()) == 0 and numberOfItemsDone < numberOfItems):
+            clear(textfield)
             generateItem(itembutton)
         elif (numberOfItemsDone >= numberOfItems):
             endticks = pygame.time.get_ticks()
@@ -174,6 +178,7 @@ while True:
             goodsAlert.setText('Goods: %d  |  Time/Piece: %.2fs' % (numberOfGoods, timePerGood))
             state = 'START'
         itembutton.draw(screen)
+
     elif(state == 'GAMEOVER'):
         for g in gameOverScreen:
             g.draw(screen)

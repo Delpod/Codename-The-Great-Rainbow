@@ -8,7 +8,7 @@ try:
     import buttons
     from pygame.locals import *
     from helpers import *
-    from buttons import Button, DigitButton
+    from buttons import Button, DigitButton, RenderButton
 except ImportError as err:
     print('couldn\'t load module. %s' % err)
     sys.exit(1)
@@ -26,7 +26,7 @@ def initButtons():
     buttons.append(DigitButton((start[0], start[1] + 80), chr(48), 0))
     buttons.append(Button((start[0] + 1 * 80, start[1] + 80), 'Bcksp', 20))
     buttons.append(Button((start[0] + 2 * 80, start[1] + 80), 'Cls', 30))
-    buttons.append(Button((start[0] - 16, start[1] + 2 * 80), 'Weigh', 36, 'longbutton.png'))
+    buttons.append(Button((start[0] - 16, start[1] + 2 * 80), 'Weigh', 40, 'longbutton.png'))
     return pygame.sprite.RenderPlain(buttons)
 
 pygame.init()
@@ -37,7 +37,7 @@ background = pygame.Surface(screen.get_size())
 background = background.convert()
 background.fill((250, 250, 250))
 
-buttons = pygame.sprite.RenderPlain(initButtons())
+buttons = RenderButton(initButtons())
 
 screen.blit(background, (0, 0))
 pygame.display.flip()
@@ -55,6 +55,4 @@ while True:
                 b.checkClick(pygame.mouse.get_pos())
 
     buttons.draw(screen)
-    for b in buttons.sprites():
-        b.drawText()
     pygame.display.flip()

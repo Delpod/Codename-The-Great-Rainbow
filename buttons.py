@@ -28,13 +28,13 @@ class Button(Clickable):
         Clickable.__init__(self)
         self.image, self.rect = load_img(name)
         self.rect[0], self.rect[1] = pos[0], pos[1]
-        self.screen = pygame.display.get_surface()
-        self.area = self.screen.get_rect()
+        screen = pygame.display.get_surface()
+        self.area = screen.get_rect()
         self.text, self.textRect = create_text(text, size)
         self.textRect.center = ((self.rect[0] + self.rect[2]/2), (self.rect[1] + self.rect[3]/2))
 
-    def drawText(self):
-        self.screen.blit(self.text, self.textRect)
+    def drawText(self, surface):
+        surface.blit(self.text, self.textRect)
 
     def onClick(self):
         print('Click')
@@ -47,3 +47,11 @@ class DigitButton(Button):
     def onClick(self):
         print(self.value)
 
+class RenderButton(pygame.sprite.RenderPlain):
+    def __init__(self, *sprites):
+        pygame.sprite.RenderPlain.__init__(self, sprites)
+
+    def draw(self, surface):
+        ret = pygame.sprite.RenderPlain.draw(self, surface)
+        for b in self.sprites():
+            b.drawText(surface)

@@ -54,7 +54,7 @@ background = background.convert()
 background.fill((250, 250, 250))
 
 otherUi = pygame.sprite.RenderPlain((DrawRect((0, 0, 0), (screensize[0] / 2 - 1, 0), (2, screensize[1]))))
-textField = TextField((848, 120), (224, 64), (190, 220, 165), (60, 85, 35))
+textField = TextField((848, 120), (224, 64), 64, (190, 220, 165), (60, 85, 35))
 buttons = RenderButton(initButtons())
 
 screen.blit(background, (0, 0))

@@ -7,16 +7,27 @@ try:
     import helpers
     import buttons
     import textField
+    import drawRect
     from pygame.locals import *
     from helpers import *
     from buttons import Button, DigitButton, RenderButton
     from textField import TextField
+    from drawRect import DrawRect
 except ImportError as err:
     print('couldn\'t load module. %s' % err)
     sys.exit(1)
 
 global screensize
 screensize = (1280, 720)
+
+def setValue(value, textfield):
+    textfield.setText(str(int(textfield.getString()) * 10 + value))
+
+def backspace(textfield):
+    textfield.setText(str(int(int(textfield.getString()) / 10)))
+
+def clear(textfield):
+    textfield.setText('0')
 
 def initButtons():
     buttons = []
@@ -25,13 +36,14 @@ def initButtons():
     for i in range(3):
         for j in range(3):
             val = 1 + j + 3 * i
-            buttons.append(DigitButton((start[0] + 80 * j, start[1] - 80 * i), chr(48 + val), val))
+            buttons.append(DigitButton((start[0] + 80 * j, start[1] - 80 * i), chr(48 + val), val, function=setValue))
 
-    buttons.append(Button((start[0], start[1] + 80), 'Cls', 30))
-    buttons.append(DigitButton((start[0] + 1 * 80, start[1] + 80), chr(48), 0))
-    buttons.append(Button((start[0] + 2 * 80, start[1] + 80), 'Bcksp', 20))
+    buttons.append(Button((start[0], start[1] + 80), 'Cls', 30, function=clear))
+    buttons.append(DigitButton((start[0] + 1 * 80, start[1] + 80), chr(48), 0, function=setValue))
+    buttons.append(Button((start[0] + 2 * 80, start[1] + 80), 'Bcksp', 20, function=backspace))
     buttons.append(Button((start[0], start[1] + 2 * 80), 'Weigh', 40, 'longbutton.png'))
     return pygame.sprite.RenderPlain(buttons)
+
 
 pygame.init()
 screen = pygame.display.set_mode(screensize)
@@ -41,8 +53,9 @@ background = pygame.Surface(screen.get_size())
 background = background.convert()
 background.fill((250, 250, 250))
 
-buttons = RenderButton(initButtons())
+otherUi = pygame.sprite.RenderPlain((DrawRect((0, 0, 0), (screensize[0] / 2 - 1, 0), (2, screensize[1]))))
 textField = TextField((848, 120), (224, 64), (190, 220, 165), (60, 85, 35))
+buttons = RenderButton(initButtons())
 
 screen.blit(background, (0, 0))
 pygame.display.flip()
@@ -57,8 +70,9 @@ while True:
             sys.exit(2)
         elif(event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]):
             for b in buttons.sprites():
-                b.checkClick(pygame.mouse.get_pos())
+                b.checkClick(pygame.mouse.get_pos(), textField)
 
     buttons.draw(screen)
     textField.draw(screen)
+    otherUi.draw(screen)
     pygame.display.flip()

@@ -26,6 +26,10 @@ class TextField(pygame.sprite.RenderPlain):
         self.drawText(surface)
 
     def setText(self, text):
+        self.string = text
         self.text, self.textRect = create_text(text, 60)
-        self.textRect[0] = self.outer.rect[0] + 10
+        self.textRect[0] = self.outer.rect[0] + self.outer.rect[2] - self.textRect[2] - 10
         self.textRect[1] = self.outer.rect[1] + (self.outer.rect[3] - self.textRect[3] * 0.8) / 2
+
+    def getString(self):
+        return self.string

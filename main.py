@@ -10,7 +10,7 @@ try:
     import drawRect
     from pygame.locals import *
     from helpers import *
-    from buttons import Button, DigitButton, RenderButton
+    from buttons import Button, DigitButton, ItemButton, RenderButton
     from textField import TextField
     from drawRect import DrawRect
 except ImportError as err:
@@ -44,6 +44,20 @@ def initButtons():
     buttons.append(Button((start[0], start[1] + 2 * 80), 'Weigh', 40, 'longbutton.png'))
     return pygame.sprite.RenderPlain(buttons)
 
+def generateItem(itembutton):
+    x = random.randint(0, screensize[0] / 2 - 150)
+    y = random.randint(0, screensize[1] - 100)
+    quantity = 1
+    weigh = random.randint(0, 100) > 50
+    if (weigh):
+        quantity = random.randint(5, 200) / 100
+    else:
+        many = random.randint(0, 100) > 50
+        if (many):
+            quantity = random.randint(2, 50)
+
+    itembutton.add((ItemButton((x, y), 'Pen', quantity, weigh)))
+
 
 pygame.init()
 screen = pygame.display.set_mode(screensize)
@@ -56,6 +70,7 @@ background.fill((250, 250, 250))
 otherUi = pygame.sprite.RenderPlain((DrawRect((0, 0, 0), (screensize[0] / 2 - 1, 0), (2, screensize[1]))))
 textField = TextField((848, 120), (224, 64), 64, (190, 220, 165), (60, 85, 35))
 buttons = RenderButton(initButtons())
+itembutton = RenderButton(())
 
 screen.blit(background, (0, 0))
 pygame.display.flip()
@@ -71,8 +86,11 @@ while True:
         elif(event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]):
             for b in buttons.sprites():
                 b.checkClick(pygame.mouse.get_pos(), textField)
+    if(len(itembutton.sprites()) == 0):
+        generateItem(itembutton)
 
     buttons.draw(screen)
     textField.draw(screen)
+    itembutton.draw(screen)
     otherUi.draw(screen)
     pygame.display.flip()

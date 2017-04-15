@@ -30,13 +30,34 @@ class Button(Clickable):
         Clickable.__init__(self, function)
         self.image, self.rect = load_img(name)
         self.rect[0], self.rect[1] = pos[0], pos[1]
-        screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
         self.text, self.textRect = create_text(text, size)
         self.textRect.center = ((self.rect[0] + self.rect[2]/2), (self.rect[1] + self.rect[3]/2))
 
     def drawText(self, surface):
         surface.blit(self.text, self.textRect)
+
+
+class ItemButton(Button):
+    def __init__(self, pos, itemName, quantity=1, toWeigh=False, function=None):
+        size = min(int(325 / len(itemName)), 75)
+        Button.__init__(self, pos, itemName, size, 'item.png', function=function)
+        self.textRect[1] -= 10
+        self.toWeigh = toWeigh
+        self.quantity = round(quantity, 2) if toWeigh else int(quantity)
+        text = '??.?? kg' if toWeigh else 'x ' + str(self.quantity)
+        self.text2, self.textRect2 = create_text(text, 30)
+        self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
+        self.unveilWeigh()
+
+    def drawText(self, surface):
+        Button.drawText(self, surface)
+        surface.blit(self.text2, self.textRect2)
+
+    def unveilWeigh(self):
+        if(self.toWeigh):
+            text = str(float(self.quantity)) + ' kg'
+            self.text2, self.textRect2 = create_text(text, 30)
+            self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
 
 class DigitButton(Button):
     def __init__(self, pos, text, value, size=36, function=None):

@@ -5,14 +5,14 @@ try:
     import os
     import pygame
     import helpers
-    import buttons
+    import button
     import textField
     import drawRect
     import items
     from pygame.locals import *
     from helpers import *
     from items import *
-    from buttons import Button, DigitButton, ItemButton, RenderButton
+    from button import Button, DigitButton, ItemButton, TextFieldButton, RenderButton
     from textField import TextField
     from drawRect import DrawRect
 except ImportError as err:
@@ -35,26 +35,28 @@ def unveilWeigh(itemButton):
     itemButton.sprites()[0].unveilWeigh()
 
 def initButtons(textfield, itembutton):
-    buttons = []
+    buttonList = []
     buttonArgs = []
     start = [848, 360]
+
+    nextClientButton = TextFieldButton((50, screensize[1] - 150), (screensize[0] / 2 - 100, 100), 100, 'Next Client')
 
     for i in range(3):
         for j in range(3):
             val = 1 + j + 3 * i
-            buttons.append(DigitButton((start[0] + 80 * j, start[1] - 80 * i), chr(48 + val), val, function=setValue))
+            buttonList.append(DigitButton((start[0] + 80 * j, start[1] - 80 * i), chr(48 + val), val, function=setValue))
             buttonArgs.append(textfield)
 
-    buttons.append(Button((start[0], start[1] + 80), 'Cls', 30, function=clear))
+    buttonList.append(Button((start[0], start[1] + 80), 'Cls', 30, function=clear))
     buttonArgs.append(textfield)
-    buttons.append(DigitButton((start[0] + 1 * 80, start[1] + 80), chr(48), 0, function=setValue))
+    buttonList.append(DigitButton((start[0] + 1 * 80, start[1] + 80), chr(48), 0, function=setValue))
     buttonArgs.append(textfield)
-    buttons.append(Button((start[0] + 2 * 80, start[1] + 80), 'Bcksp', 20, function=backspace))
+    buttonList.append(Button((start[0] + 2 * 80, start[1] + 80), 'Bcksp', 20, function=backspace))
     buttonArgs.append(textfield)
-    buttons.append(Button((start[0], start[1] + 2 * 80), 'Weigh', 40, 'longbutton.png', function=unveilWeigh))
+    buttonList.append(Button((start[0], start[1] + 2 * 80), 'Weigh', 40, 'longbutton.png', function=unveilWeigh))
     buttonArgs.append(itembutton)
 
-    return pygame.sprite.RenderPlain(buttons), buttonArgs
+    return nextClientButton, RenderButton(buttonList), buttonArgs
 
 def generateItem(itembutton):
     x = random.randint(0, screensize[0] / 2 - 150)
@@ -81,19 +83,20 @@ background = pygame.Surface(screen.get_size())
 background = background.convert()
 background.fill((250, 250, 250))
 
-otherUi = pygame.sprite.RenderPlain((DrawRect((0, 0, 0), (screensize[0] / 2 - 1, 0), (2, screensize[1]))))
+otherUi = pygame.sprite.RenderPlain((DrawRect((0, 0, 0), (screensize[0] / 2, 0), (2, screensize[1]))))
 textfield = TextField((848, 120), (224, 64), 64, (190, 220, 165), (60, 85, 35))
 itembutton = RenderButton(())
-buttons, buttonArgs = initButtons(textfield, itembutton)
-buttons = RenderButton(buttons)
+nextClientButton, buttons, buttonArgs = initButtons(textfield, itembutton)
 
 screen.blit(background, (0, 0))
 pygame.display.flip()
 
 clock = pygame.time.Clock()
 
-state = 'GAME'
-
+state = 'START'
+endticks = 0
+startticks = pygame.time.get_ticks()
+print(startticks)
 while True:
     clock.tick(60)
 
@@ -118,14 +121,22 @@ while True:
                                 screen.blit(background, item.rect)
                                 itembutton.empty()
                                 if(item.quantity < 0):
+                                    endticks = pygame.time.get_ticks()
                                     state='GAMEOVER'
                                     print('Game over')
+                                    print((endticks-startticks)/1000)
+            elif(state == 'START'):
+                if(nextClientButton.checkClick(pygame.mouse.get_pos())):
+                    screen.blit(background, nextClientButton.rect)
+                    state = 'GAME'
 
-    if(state == 'GAME' and len(itembutton.sprites()) == 0):
-        generateItem(itembutton)
-
+    if(state == 'GAME'):
+        if(len(itembutton.sprites()) == 0):
+            generateItem(itembutton)
+        itembutton.draw(screen)
+    elif(state == 'START'):
+        nextClientButton.draw(screen)
     buttons.draw(screen)
     textfield.draw(screen)
-    itembutton.draw(screen)
     otherUi.draw(screen)
     pygame.display.flip()

@@ -1,2 +1,2 @@
 weighItems = ['Cheese', 'Apple', 'Orange', 'Beef']
-pieceItems = ['Vinegar', 'Vodka', 'Ciggarettes', 'Beer']
+pieceItems = ['Vinegar', 'Vodka', 'Ciggarettes', 'Beer', 'Pen', 'Pinapple']

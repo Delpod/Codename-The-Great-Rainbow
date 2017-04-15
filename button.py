@@ -3,8 +3,10 @@ try:
     import pygame
     import pygame.font
     import helpers
+    import textField
     from pygame.locals import *
     from helpers import *
+    from textField import *
 except ImportError as err:
     print('couldn\'t load module. %s' % err)
     sys.exit(1)
@@ -25,6 +27,17 @@ class Clickable(pygame.sprite.Sprite):
     def onClick(self, *kwargs):
         if(self.function != None):
             self.function(*kwargs)
+
+class TextFieldButton(TextField, Clickable):
+    def __init__(self, pos, size, textSize, text, innerColor=(255, 255, 255), outerColor=(0, 0, 0), function=None):
+        Clickable.__init__(self, function)
+        TextField.__init__(self, pos, size, textSize, innerColor, outerColor, text)
+        self.rect = self.outer.rect
+
+    def setText(self, text):
+        self.string = text
+        self.text, self.textRect = create_text(text, self.textSize)
+        self.textRect.center = (self.outer.rect[0] + self.outer.rect[2] / 2, self.outer.rect[1] + self.outer.rect[3] / 2)
 
 class Button(Clickable):
     def __init__(self, pos, text, size=36, name='button.png', function=None):

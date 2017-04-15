@@ -44,8 +44,14 @@ class ItemButton(Button):
         Button.__init__(self, pos, itemName, size, 'item.png', function=function)
         self.textRect[1] -= 10
         self.toWeigh = toWeigh
-        self.weighed = False
-        self.quantity = round(quantity, 2) if toWeigh else int(quantity)
+
+        if(self.toWeigh):
+            self.quantity = round(quantity, 2)
+            self.weighed = False
+        else:
+            self.quantity = int(quantity)
+            self.weighed = True
+
         text = '??.?? kg' if toWeigh else 'x ' + str(self.quantity)
         self.text2, self.textRect2 = create_text(text, 30)
         self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
@@ -60,6 +66,13 @@ class ItemButton(Button):
             self.text2, self.textRect2 = create_text(text, 30)
             self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
             self.weighed = True
+
+    def setQuantity(self, quantity):
+        self.quantity = quantity
+        self.text2, self.textRect2 = create_text('x ' + str(quantity), 30)
+        self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
+
+
 
 class DigitButton(Button):
     def __init__(self, pos, text, value, size=36, function=None):

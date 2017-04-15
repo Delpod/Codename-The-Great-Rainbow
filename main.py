@@ -21,10 +21,10 @@ global screensize
 screensize = (1280, 720)
 
 def setValue(value, textfield):
-    textfield.setText(str(int(textfield.getString()) * 10 + value))
+    textfield.setText(str(int(textfield.string) * 10 + value))
 
 def backspace(textfield):
-    textfield.setText(str(int(int(textfield.getString()) / 10)))
+    textfield.setText(str(int(int(textfield.string)) / 10))
 
 def clear(textfield):
     textfield.setText('0')
@@ -78,15 +78,17 @@ background = background.convert()
 background.fill((250, 250, 250))
 
 otherUi = pygame.sprite.RenderPlain((DrawRect((0, 0, 0), (screensize[0] / 2 - 1, 0), (2, screensize[1]))))
-textField = TextField((848, 120), (224, 64), 64, (190, 220, 165), (60, 85, 35))
+textfield = TextField((848, 120), (224, 64), 64, (190, 220, 165), (60, 85, 35))
 itembutton = RenderButton(())
-buttons, buttonArgs = initButtons(textField, itembutton)
+buttons, buttonArgs = initButtons(textfield, itembutton)
 buttons = RenderButton(buttons)
 
 screen.blit(background, (0, 0))
 pygame.display.flip()
 
 clock = pygame.time.Clock()
+
+state = 'GAME'
 
 while True:
     clock.tick(60)
@@ -95,20 +97,31 @@ while True:
         if(event.type == QUIT):
             sys.exit(2)
         elif(event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]):
-            for i in range(len(buttons.sprites())):
-                if(buttons.sprites()[i].checkClick(pygame.mouse.get_pos(), buttonArgs[i])):
-                    break
-            else:
-                item = itembutton.sprites()[0]
-                if(item.toWeigh and item.weighed and item.checkClick(pygame.mouse.get_pos())):
-                    screen.blit(background, item.rect)
-                    itembutton.empty()
+            if(state == 'GAME'):
+                for i in range(len(buttons.sprites())):
+                    if(buttons.sprites()[i].checkClick(pygame.mouse.get_pos(), buttonArgs[i])):
+                        break
+                else:
+                    item = itembutton.sprites()[0]
+                    if(item.weighed and item.checkClick(pygame.mouse.get_pos())):
+                        if(item.toWeigh):
+                            screen.blit(background, item.rect)
+                            itembutton.empty()
+                        else:
+                            item.setQuantity(item.quantity - int(textfield.string))
+                            clear(textfield)
+                            if(item.quantity <= 0):
+                                screen.blit(background, item.rect)
+                                itembutton.empty()
+                                if(item.quantity < 0):
+                                    state='GAMEOVER'
+                                    print('Game over')
 
-    if(len(itembutton.sprites()) == 0):
+    if(state == 'GAME' and len(itembutton.sprites()) == 0):
         generateItem(itembutton)
 
     buttons.draw(screen)
-    textField.draw(screen)
+    textfield.draw(screen)
     itembutton.draw(screen)
     otherUi.draw(screen)
     pygame.display.flip()

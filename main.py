@@ -113,11 +113,11 @@ while True:
             sys.exit(2)
         elif(event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]):
             if(state == 'GAME'):
+                item = itembutton.sprites()[0]
                 for i in range(len(buttons.sprites())):
                     if(buttons.sprites()[i].checkClick(pygame.mouse.get_pos(), buttonArgs[i])):
                         break
                 else:
-                    item = itembutton.sprites()[0]
                     if(item.weighed and item.checkClick(pygame.mouse.get_pos())):
                         if(item.toWeigh):
                             screen.blit(background, item.rect)
@@ -135,6 +135,10 @@ while True:
                                 itembutton.empty()
                                 if(item.quantity < 0):
                                     state = 'GAMEOVER'
+                if(item.failure):
+                    screen.blit(background, item.rect)
+                    itembutton.empty()
+                    state = 'GAMEOVER'
             elif(state == 'START'):
                 if(nextClientButton.checkClick(pygame.mouse.get_pos())):
                     numberOfItems = random.randint(10, 20)

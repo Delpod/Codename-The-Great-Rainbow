@@ -65,9 +65,10 @@ class ItemButton(Button):
             self.quantity = int(quantity)
             self.weighed = True
 
-        text = '??.?? kg' if toWeigh else 'x ' + str(self.quantity)
+        text = '?.?? kg' if toWeigh else 'x ' + str(self.quantity)
         self.text2, self.textRect2 = create_text(text, 30)
         self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
+        self.failure = False
 
     def drawText(self, surface):
         Button.drawText(self, surface)
@@ -79,6 +80,8 @@ class ItemButton(Button):
             self.text2, self.textRect2 = create_text(text, 30)
             self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
             self.weighed = True
+        else:
+            self.failure = True
 
     def setQuantity(self, quantity):
         self.quantity = quantity

@@ -17,7 +17,8 @@ class Clickable(pygame.sprite.Sprite):
 
     def checkClick(self, mousePos, *kwargs):
         if(self.rect.collidepoint(mousePos[0], mousePos[1])):
-            return True, self.onClick(*kwargs)
+            self.onClick(*kwargs)
+            return True
         else:
             return False
 
@@ -43,11 +44,11 @@ class ItemButton(Button):
         Button.__init__(self, pos, itemName, size, 'item.png', function=function)
         self.textRect[1] -= 10
         self.toWeigh = toWeigh
+        self.weighed = False
         self.quantity = round(quantity, 2) if toWeigh else int(quantity)
         text = '??.?? kg' if toWeigh else 'x ' + str(self.quantity)
         self.text2, self.textRect2 = create_text(text, 30)
         self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
-        self.unveilWeigh()
 
     def drawText(self, surface):
         Button.drawText(self, surface)
@@ -58,6 +59,7 @@ class ItemButton(Button):
             text = str(float(self.quantity)) + ' kg'
             self.text2, self.textRect2 = create_text(text, 30)
             self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
+            self.weighed = True
 
 class DigitButton(Button):
     def __init__(self, pos, text, value, size=36, function=None):

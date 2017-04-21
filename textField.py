@@ -12,7 +12,7 @@ except ImportError as err:
 
 
 class TextField(pygame.sprite.RenderPlain):
-    def __init__(self, pos, size, textSize, innerColor=(255, 255, 255), outerColor=(0, 0, 0), text='0', maxLength=-1):
+    def __init__(self, pos, size, textSize, innerColor=(250, 250, 250), outerColor=(10, 10, 10), text='0', maxLength=-1):
         if(maxLength == -1):
             self.maxLength = int(size[0] / 30)
         else:

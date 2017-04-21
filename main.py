@@ -65,8 +65,8 @@ def initButtons(textfield, itembutton):
 
 def initAlerts():
     gameOverAlert = TextFieldButton((200, screensize[1] / 2 - 200), (screensize[0] - 400, 400), 200, 'Game Over', (240, 240, 240))
-    gameOverButton = TextFieldButton((screensize[0] / 2 - 300, screensize[1] / 2 + 100), (200, 64), 50, 'Try again')
-    gameOverExit = TextFieldButton((screensize[0] / 2 + 100, screensize[1] / 2 + 100), (200, 64), 50, 'Exit')
+    gameOverButton = TextFieldButton((screensize[0] / 2 - 300, screensize[1] / 2 + 100), (200, 64), 50, 'Try again', (250, 250, 250))
+    gameOverExit = TextFieldButton((screensize[0] / 2 + 100, screensize[1] / 2 + 100), (200, 64), 50, 'Exit', (250, 250, 250))
 
     goodsAlert = TextFieldButton((200, screensize[1] / 2 - 50), (screensize[0] - 400, 100), 70, '', (240, 240, 240))
 
@@ -102,7 +102,7 @@ otherUi = pygame.sprite.RenderPlain((
     DrawRect((224, 224, 224), (0, 0), (screensize[0] / 2, screensize[1])),
     DrawRect((64, 64, 64), (0, 50), (screensize[0] / 2, screensize[1] - 100)),
     DrawRect((200, 224, 200), (screensize[0] / 2, 0), (screensize[0] / 2, screensize[1])),
-    DrawRect((0, 0, 0), (screensize[0] / 2, 0), (2, screensize[1])),
+    DrawRect((10, 10, 10), (screensize[0] / 2, 0), (2, screensize[1])),
 ))
 textfield = TextField((848, 120), (224, 64), 64, (190, 220, 165), (60, 85, 35))
 itembutton = RenderButton(())

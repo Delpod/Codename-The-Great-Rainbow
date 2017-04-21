@@ -31,7 +31,7 @@ class Clickable(pygame.sprite.Sprite):
 
 
 class TextFieldButton(TextField, Clickable):
-    def __init__(self, pos, size, textSize, text, innerColor=(255, 255, 255), outerColor=(0, 0, 0), function=None):
+    def __init__(self, pos, size, textSize, text, innerColor=(250, 250, 250), outerColor=(10, 10, 10), function=None):
         Clickable.__init__(self, function)
         TextField.__init__(self, pos, size, textSize, innerColor, outerColor, text)
         self.rect = self.outer.rect

@@ -33,7 +33,7 @@ def backspace(textfield_):
         textfield_.setText(str(value))
         textfield.firstclick = False
     else:
-        textfield_.setText('1');
+        textfield_.setText('1')
 
 
 def clear(textfield_):
@@ -158,7 +158,6 @@ while True:
                                 screen.blit(background, item.rect)
                                 numberOfItemsDone += 1
                                 itembutton.empty()
-                        print(numberOfGoods, numberOfItemsDone)
                 if item.failure:
                     clear(textfield)
                     screen.blit(background, item.rect)
@@ -200,7 +199,7 @@ while True:
             generate_item(itembutton)
         elif numberOfItemsDone >= numberOfItems:
             endticks = pygame.time.get_ticks()
-            timePerGood = ((endticks - startticks)/1000)/numberOfGoods
+            timePerGood = ((endticks - startticks) / 1000) / numberOfGoods
             goodsAlert.setText('Goods: %d  |  Time/Piece: %.2fs' % (numberOfGoods, timePerGood))
             state = 'START'
         itembutton.draw(screen)

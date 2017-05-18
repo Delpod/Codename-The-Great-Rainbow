@@ -29,6 +29,9 @@ class Clickable(pygame.sprite.Sprite):
         if self.function is not None:
             self.function(*kwargs)
 
+    def getRectCenter(self, rect, xshift=0, yshift=0):
+        return (rect[0] + rect[2] / 2 + xshift), (rect[1] + rect[3] / 2 + yshift)
+
 
 class TextFieldButton(TextField, Clickable):
     def __init__(self, pos, size, textSize, text, innerColor=(250, 250, 250), outerColor=(10, 10, 10), function=None):
@@ -39,15 +42,20 @@ class TextFieldButton(TextField, Clickable):
     def setText(self, text):
         self.string = text
         self.text, self.textRect = create_text(text, self.textSize)
-        self.textRect.center = (self.outer.rect[0] + self.outer.rect[2] / 2, self.outer.rect[1] + self.outer.rect[3] / 2)
+        self.textRect.center = self.getRectCenter(self.outer.rect)
 
 class Button(Clickable):
     def __init__(self, pos, text, size=36, name='button.png', function=None):
         Clickable.__init__(self, function)
-        self.image, self.rect = load_img(name)
+
+        try:
+            self.image, self.rect = load_img(name)
+        except SystemExit:
+            sys.exit(1)
+
         self.rect[0], self.rect[1] = pos[0], pos[1]
         self.text, self.textRect = create_text(text, size)
-        self.textRect.center = ((self.rect[0] + self.rect[2]/2), (self.rect[1] + self.rect[3]/2))
+        self.textRect.center = self.getRectCenter(self.rect)
 
     def drawText(self, surface):
         surface.blit(self.text, self.textRect)
@@ -69,7 +77,7 @@ class ItemButton(Button):
 
         text = '?.?? kg' if toWeigh else 'x ' + str(self.quantity)
         self.text2, self.textRect2 = create_text(text, 30)
-        self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
+        self.textRect2.center = self.getRectCenter(self.rect, yshift=30)
         self.failure = False
 
     def drawText(self, surface):
@@ -80,7 +88,7 @@ class ItemButton(Button):
         if self.toWeigh:
             text = str(float(self.quantity)) + ' kg'
             self.text2, self.textRect2 = create_text(text, 30)
-            self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
+            self.textRect2.center = self.getRectCenter(self.rect, yshift=30)
             self.weighed = True
         else:
             self.failure = True
@@ -90,7 +98,7 @@ class ItemButton(Button):
             self.failure = True
         self.quantity = quantity
         self.text2, self.textRect2 = create_text('x ' + str(quantity), 30)
-        self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
+        self.textRect2.center = self.getRectCenter(self.rect, yshift=30)
 
     def onClick(self, *kwargs):
         if self.toWeigh:

@@ -12,4 +12,4 @@ class DrawRect(pygame.sprite.Sprite):
         surface = pygame.Surface(size)
         self.rect = Rect(pos[0], pos[1], size[0], size[1])
         surface.fill(color, (0, 0, size[0], size[1]))
-        self.image = surface.convert()
+        self.image = surface.convert(surface)

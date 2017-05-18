@@ -19,75 +19,81 @@ except ImportError as err:
     print('couldn\'t load module. %s' % err)
     sys.exit(1)
 
-global screensize
 screensize = (1280, 720)
 
-def setValue(value, textfield):
-    textfield.setText(str(int(textfield.string) * 10 + value))
+
+def set_value(value, textfield_):
+    if int(textfield_.string) != 0 or value != 0:
+        textfield_.addText(str(value))
 
 
-def backspace(textfield):
-    textfield.setText(str(int(int(textfield.string) / 10)))
+def backspace(textfield_):
+    value = int(int(textfield_.string) / 10)
+    if value > 0:
+        textfield_.setText(str(value))
+        textfield.firstclick = False
+    else:
+        textfield_.setText('1');
 
 
-def clear(textfield):
-    textfield.setText('0')
+def clear(textfield_):
+    textfield_.setText('1')
 
 
-def unveilWeigh(itemButton):
-    itemButton.sprites()[0].unveilWeigh()
+def unveil_weigh(itembutton_):
+    itembutton_.sprites()[0].unveilWeigh()
 
 
-def initButtons(textfield, itembutton):
-    buttonList = []
-    buttonArgs = []
+def init_buttons(textfield_, itembutton_):
+    buttonlist = []
+    buttonargs = []
     start = [848, 360]
 
-    nextClientButton = TextFieldButton((50, screensize[1] - 150), (screensize[0] / 2 - 100, 100), 100, 'Next Client', (240, 240, 240))
+    nextclientbutton = TextFieldButton((50, screensize[1] - 150), (screensize[0] / 2 - 100, 100), 100, 'Next Client', (255, 255, 255), (0, 0, 0))
 
     for i in range(3):
         for j in range(3):
             val = 1 + j + 3 * i
-            buttonList.append(DigitButton((start[0] + 80 * j, start[1] - 80 * i), chr(48 + val), val, function=setValue))
-            buttonArgs.append(textfield)
+            buttonlist.append(DigitButton((start[0] + 80 * j, start[1] - 80 * i), chr(48 + val), val, function=set_value))
+            buttonargs.append(textfield_)
 
-    buttonList.append(Button((start[0], start[1] + 80), 'Cls', 30, function=clear))
-    buttonArgs.append(textfield)
-    buttonList.append(DigitButton((start[0] + 1 * 80, start[1] + 80), chr(48), 0, function=setValue))
-    buttonArgs.append(textfield)
-    buttonList.append(Button((start[0] + 2 * 80, start[1] + 80), 'Bcksp', 20, function=backspace))
-    buttonArgs.append(textfield)
-    buttonList.append(Button((start[0], start[1] + 2 * 80), 'Weigh', 40, 'longbutton.png', function=unveilWeigh))
-    buttonArgs.append(itembutton)
+    buttonlist.append(Button((start[0], start[1] + 80), 'Cls', 30, function=clear))
+    buttonargs.append(textfield_)
+    buttonlist.append(DigitButton((start[0] + 1 * 80, start[1] + 80), chr(48), 0, function=set_value))
+    buttonargs.append(textfield_)
+    buttonlist.append(Button((start[0] + 2 * 80, start[1] + 80), 'Bcksp', 20, function=backspace))
+    buttonargs.append(textfield_)
+    buttonlist.append(Button((start[0], start[1] + 2 * 80), 'Weigh', 40, 'longbutton.png', function=unveil_weigh))
+    buttonargs.append(itembutton_)
 
-    return nextClientButton, RenderButton(buttonList), buttonArgs
-
-
-def initAlerts():
-    gameOverAlert = TextFieldButton((200, screensize[1] / 2 - 200), (screensize[0] - 400, 400), 200, 'Game Over', (240, 240, 240))
-    gameOverButton = TextFieldButton((screensize[0] / 2 - 300, screensize[1] / 2 + 100), (200, 64), 50, 'Try again', (250, 250, 250))
-    gameOverExit = TextFieldButton((screensize[0] / 2 + 100, screensize[1] / 2 + 100), (200, 64), 50, 'Exit', (250, 250, 250))
-
-    goodsAlert = TextFieldButton((200, screensize[1] / 2 - 50), (screensize[0] - 400, 100), 70, '', (240, 240, 240))
-
-    return (gameOverAlert, gameOverButton, gameOverExit), goodsAlert
+    return nextclientbutton, RenderButton(buttonlist), buttonargs
 
 
-def generateItem(itembutton):
+def init_alerts():
+    gameoveralert = TextFieldButton((200, screensize[1] / 2 - 200), (screensize[0] - 400, 400), 200, 'Game Over', (240, 240, 240), (0, 0, 0))
+    gameoverbutton = TextFieldButton((screensize[0] / 2 - 300, screensize[1] / 2 + 100), (200, 64), 50, 'Try again', (250, 250, 250), (0, 0, 0))
+    gameoverexit = TextFieldButton((screensize[0] / 2 + 100, screensize[1] / 2 + 100), (200, 64), 50, 'Exit', (250, 250, 250), (0, 0, 0))
+
+    goodsalert = TextFieldButton((200, screensize[1] / 2 - 50), (screensize[0] - 400, 100), 70, '', (240, 240, 240), (0, 0, 0))
+
+    return (gameoveralert, gameoverbutton, gameoverexit), goodsalert
+
+
+def generate_item(itembutton_):
     x = random.randint(0, screensize[0] / 2 - 150)
     y = random.randint(50, screensize[1] - 150)
     quantity = 1
     weigh = random.randint(0, 100) > 50
-    itemName = weighItems[random.randint(0, len(weighItems) - 1)] if weigh else pieceItems[random.randint(0, len(pieceItems) - 1)]
+    itemname = weighItems[random.randint(0, len(weighItems) - 1)] if weigh else pieceItems[random.randint(0, len(pieceItems) - 1)]
 
-    if (weigh):
+    if weigh:
         quantity = random.randint(5, 200) / 100
     else:
         many = random.randint(0, 100) > 50
-        if(many):
+        if many:
             quantity = random.triangular(2, 50, 2)
 
-    itembutton.add((ItemButton((x, y), itemName, quantity, weigh)))
+    itembutton_.add((ItemButton((x, y), itemname, quantity, weigh)))
 
 
 pygame.init()
@@ -95,7 +101,7 @@ screen = pygame.display.set_mode(screensize)
 pygame.display.set_caption('The Great Rainbow')
 
 background = pygame.Surface(screen.get_size())
-background = background.convert()
+background = background.convert(background)
 background.fill((250, 250, 250))
 
 otherUi = pygame.sprite.RenderPlain((
@@ -106,11 +112,10 @@ otherUi = pygame.sprite.RenderPlain((
 ))
 textfield = TextField((848, 120), (224, 64), 64, (190, 220, 165), (60, 85, 35))
 itembutton = RenderButton(())
-nextClientButton, buttons, buttonArgs = initButtons(textfield, itembutton)
-gameOverScreen, goodsAlert = initAlerts()
+nextClientButton, buttons, buttonArgs = init_buttons(textfield, itembutton)
+gameOverScreen, goodsAlert = init_alerts()
 
 screen.blit(background, (0, 0))
-pygame.display.flip()
 
 numberOfItems = 0
 numberOfItemsDone = 0
@@ -126,38 +131,42 @@ while True:
     clock.tick(60)
 
     for event in pygame.event.get():
-        if(event.type == QUIT):
+        if event.type == QUIT:
             sys.exit(2)
-        elif(event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]):
-            if(state == 'GAME'):
+        elif event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+            if state == 'GAME':
                 item = itembutton.sprites()[0]
                 for i in range(len(buttons.sprites())):
-                    if(buttons.sprites()[i].checkClick(pygame.mouse.get_pos(), buttonArgs[i])):
+                    if buttons.sprites()[i].checkClick(pygame.mouse.get_pos(), buttonArgs[i]):
                         break
                 else:
-                    if(item.checkClick(pygame.mouse.get_pos(), int(textfield.string)) and item.weighed):
-                        if(item.toWeigh):
-                            screen.blit(background, item.rect)
-                            numberOfGoods += 1
-                            numberOfItemsDone += 1
-                            itembutton.empty()
-                        else:
-                            q = int(textfield.string)
-                            item.setQuantity(item.quantity - q)
-                            clear(textfield)
-                            if(item.quantity <= 0):
+                    if item.checkClick(pygame.mouse.get_pos(), int(textfield.string)) and item.weighed:
+                        if item.toWeigh:
+                            if textfield.string == '0':
+                                clear(textfield)
+                            else:
                                 screen.blit(background, item.rect)
-                                numberOfGoods += q
+                                numberOfGoods += 1
                                 numberOfItemsDone += 1
                                 itembutton.empty()
-                if(item.failure):
+                        else:
+                            q = int(textfield.string)
+                            numberOfGoods += q
+                            item.setQuantity(item.quantity - q)
+                            clear(textfield)
+                            if item.quantity <= 0:
+                                screen.blit(background, item.rect)
+                                numberOfItemsDone += 1
+                                itembutton.empty()
+                        print(numberOfGoods, numberOfItemsDone)
+                if item.failure:
                     clear(textfield)
                     screen.blit(background, item.rect)
                     itembutton.empty()
                     state = 'GAMEOVER'
 
-            elif(state == 'START'):
-                if(nextClientButton.checkClick(pygame.mouse.get_pos())):
+            elif state == 'START':
+                if nextClientButton.checkClick(pygame.mouse.get_pos()):
                     numberOfItems = random.randint(10, 20)
                     screen.blit(background, nextClientButton.rect)
                     screen.blit(background, goodsAlert.rect)
@@ -166,38 +175,37 @@ while True:
                     state = 'GAME'
                     startticks = pygame.time.get_ticks()
 
-            elif(state == 'GAMEOVER'):
+            elif state == 'GAMEOVER':
                 for i in range(1, len(gameOverScreen)):
-                    if(gameOverScreen[i].checkClick(pygame.mouse.get_pos())):
-                        if(i == 1):
+                    if gameOverScreen[i].checkClick(pygame.mouse.get_pos()):
+                        if i == 1:
                             screen.blit(background, gameOverScreen[0].rect)
                             timePerGood = -1
                             state = 'START'
-                        elif(i == 2):
+                        elif i == 2:
                             sys.exit(0)
 
     otherUi.draw(screen)
     buttons.draw(screen)
     textfield.draw(screen)
 
-    if (state == 'START'):
+    if state == 'START':
         nextClientButton.draw(screen)
-        if (timePerGood != -1):
+        if timePerGood != -1:
             goodsAlert.draw(screen)
 
-    elif (state == 'GAME'):
-        if (len(itembutton.sprites()) == 0 and numberOfItemsDone < numberOfItems):
+    elif state == 'GAME':
+        if len(itembutton.sprites()) == 0 and numberOfItemsDone < numberOfItems:
             clear(textfield)
-            generateItem(itembutton)
-        elif (numberOfItemsDone >= numberOfItems):
+            generate_item(itembutton)
+        elif numberOfItemsDone >= numberOfItems:
             endticks = pygame.time.get_ticks()
             timePerGood = ((endticks - startticks)/1000)/numberOfGoods
             goodsAlert.setText('Goods: %d  |  Time/Piece: %.2fs' % (numberOfGoods, timePerGood))
             state = 'START'
         itembutton.draw(screen)
 
-    elif(state == 'GAMEOVER'):
+    elif state == 'GAMEOVER':
         for g in gameOverScreen:
             g.draw(screen)
-
     pygame.display.flip()

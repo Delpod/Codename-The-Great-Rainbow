@@ -19,14 +19,14 @@ class Clickable(pygame.sprite.Sprite):
         self.function = function
 
     def checkClick(self, mousePos, *kwargs):
-        if(self.rect.collidepoint(mousePos[0], mousePos[1])):
+        if self.rect.collidepoint(mousePos[0], mousePos[1]):
             self.onClick(*kwargs)
             return True
         else:
             return False
 
     def onClick(self, *kwargs):
-        if(self.function != None):
+        if self.function is not None:
             self.function(*kwargs)
 
 
@@ -60,7 +60,7 @@ class ItemButton(Button):
         self.textRect[1] = self.rect[1] + self.textRect[3] / 5
         self.toWeigh = toWeigh
 
-        if(self.toWeigh):
+        if self.toWeigh:
             self.quantity = round(quantity, 2)
             self.weighed = False
         else:
@@ -77,7 +77,7 @@ class ItemButton(Button):
         surface.blit(self.text2, self.textRect2)
 
     def unveilWeigh(self):
-        if(self.toWeigh):
+        if self.toWeigh:
             text = str(float(self.quantity)) + ' kg'
             self.text2, self.textRect2 = create_text(text, 30)
             self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
@@ -86,15 +86,16 @@ class ItemButton(Button):
             self.failure = True
 
     def setQuantity(self, quantity):
-        if(quantity < 0):
+        if quantity < 0:
             self.failure = True
         self.quantity = quantity
         self.text2, self.textRect2 = create_text('x ' + str(quantity), 30)
         self.textRect2.center = ((self.rect[0] + self.rect[2] / 2), (self.rect[1] + self.rect[3] / 2) + 30)
 
     def onClick(self, *kwargs):
-        if(self.toWeigh and (not self.weighed or kwargs[0] != 0)):
-            self.failure = True
+        if self.toWeigh:
+            if not self.weighed or kwargs[0] > 1:
+                self.failure = True
         else:
             Button.onClick(self)
 
@@ -109,9 +110,6 @@ class DigitButton(Button):
 
 
 class RenderButton(pygame.sprite.RenderPlain):
-    def __init__(self, *sprites):
-        pygame.sprite.RenderPlain.__init__(self, sprites)
-
     def draw(self, surface):
         pygame.sprite.RenderPlain.draw(self, surface)
         for b in self.sprites():

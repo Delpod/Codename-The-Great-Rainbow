@@ -79,21 +79,22 @@ def init_alerts():
     return (gameoveralert, gameoverbutton, gameoverexit), goodsalert
 
 
-def generate_item(itembutton_):
-    x = random.randint(0, screensize[0] / 2 - 150)
-    y = random.randint(50, screensize[1] - 150)
-    quantity = 1
-    weigh = random.randint(0, 100) > 50
-    itemname = weighItems[random.randint(0, len(weighItems) - 1)] if weigh else pieceItems[random.randint(0, len(pieceItems) - 1)]
+def generate_item():
+    while True:
+        x = random.randint(0, screensize[0] / 2 - 150)
+        y = random.randint(50, screensize[1] - 150)
+        quantity = 1
+        weigh = random.randint(0, 100) > 50
+        itemname = weighItems[random.randint(0, len(weighItems) - 1)] if weigh else pieceItems[random.randint(0, len(pieceItems) - 1)]
 
-    if weigh:
-        quantity = random.randint(5, 200) / 100
-    else:
-        many = random.randint(0, 100) > 50
-        if many:
-            quantity = random.triangular(2, 50, 2)
+        if weigh:
+            quantity = random.randint(5, 200) / 100
+        else:
+            many = random.randint(0, 100) > 50
+            if many:
+                quantity = random.triangular(2, 50, 2)
 
-    itembutton_.add((ItemButton((x, y), itemname, quantity, weigh)))
+        yield ItemButton((x, y), itemname, quantity, weigh)
 
 
 pygame.init()
@@ -126,6 +127,7 @@ clock = pygame.time.Clock()
 
 state = 'START'
 startticks, endticks = 0, 0
+gitem = generate_item()
 
 while True:
     clock.tick(60)
@@ -196,7 +198,7 @@ while True:
     elif state == 'GAME':
         if len(itembutton.sprites()) == 0 and numberOfItemsDone < numberOfItems:
             clear(textfield)
-            generate_item(itembutton)
+            itembutton.add(next(gitem))
         elif numberOfItemsDone >= numberOfItems:
             endticks = pygame.time.get_ticks()
             timePerGood = ((endticks - startticks) / 1000) / numberOfGoods

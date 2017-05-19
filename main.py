@@ -23,8 +23,11 @@ screensize = (1280, 720)
 
 
 def set_value(value, textfield_):
-    if int(textfield_.string) != 0 or value != 0:
+    if int(textfield_.string) != 0 and value != 0:
         textfield_.addText(str(value))
+    else:
+        textfield_.setText(str(value))
+        textfield.firstclick = False
 
 
 def backspace(textfield_):
@@ -134,7 +137,7 @@ while True:
 
     for event in pygame.event.get():
         if event.type == QUIT:
-            sys.exit(2)
+            sys.exit(0)
         elif event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
             if state == 'GAME':
                 item = itembutton.sprites()[0]

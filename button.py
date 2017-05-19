@@ -118,6 +118,9 @@ class DigitButton(Button):
 
 
 class RenderButton(pygame.sprite.RenderPlain):
+    def __init__(self, sprites):
+        super().__init__(self, sprites)
+
     def draw(self, surface):
         pygame.sprite.RenderPlain.draw(self, surface)
         for b in self.sprites():
